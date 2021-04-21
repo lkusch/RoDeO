@@ -15,11 +15,11 @@ DEPS := $(OBJS:.o=.d)
 
 INC_DIRS := $(shell find $(SRC_DIRS) -type d)
 
-INC_FLAGS := $(addprefix -I,$(INC_DIRS))
+INC_FLAGS := $(addprefix -I,$(INC_DIRS)) -I./usr/include -L./usr/lib64
 
 
 CPPFLAGS := $(INC_FLAGS) -MMD -MP -fopenmp -O2
-LDFLAGS :=  -lm -larmadillo -lgomp 
+LDFLAGS :=  -lm -larmadillo -lgomp -L./usr/lib64 
 # The final build step.
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	$(CXX) $(OBJS) -o $@ $(LDFLAGS)

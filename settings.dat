@@ -1,7 +1,7 @@
 # current working directory
-WORKING_DIRECTORY= /home/emre/RoDeO/Tests/Optimization/Eggholder/Unconstrained
+WORKING_DIRECTORY= /home/lkusch/Programs/RoDeO/Tests/SurrogateModels/OrdinaryKriging/TestUsingOnlyData
 # directory for the python scripts
-PYTHON_DIRECTORY= /home/emre/RoDeO/python
+PYTHON_DIRECTORY= /home/lkusch/Programs/RoDeO/python
 # name of the configuration file
-CONFIGURATION_FILE= eggholder.cfg
+CONFIGURATION_FILE= surrogateTestConfig.cfg
 
