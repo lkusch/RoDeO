@@ -690,7 +690,7 @@ void remove_validation_points_from_data(mat &X, vec &y, uvec & indices, mat &Xmo
 
 bool checkifTooCLose(const rowvec &v1, const rowvec &v2, double tol){
 
-	rowvec diff = v1 - v2;
+	rowvec diff = (v1 - v2)/v1;
 
 	double distance = L1norm(diff, v1.size());
 

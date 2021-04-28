@@ -35,6 +35,7 @@
 
 enum DoE_METHOD {
 	LHS,
+	LHS_INITIAL,
 	RANDOM};
 
 

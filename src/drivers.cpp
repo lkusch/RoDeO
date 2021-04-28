@@ -52,7 +52,7 @@
 RoDeODriver::RoDeODriver(){
 
 	dimension = 0;
-	numberOfKeywords = 26;
+	numberOfKeywords = 27;
 	problemName = "None";
 	problemType = "None";
 	designVectorFilename = "None";
@@ -70,6 +70,7 @@ RoDeODriver::RoDeODriver(){
 	ifmaximumNumberOfDoESamplesSet = false;
 	ifexecutablePathObjectiveFunctionSet = false;
 	ifSurrogateModelTypeSet = false;
+	ifInitialDesignSet = false;
 
 	ifWarmStart = false;
 
@@ -101,6 +102,7 @@ RoDeODriver::RoDeODriver(){
 	keywords[23]="VISUALIZATION=";
 	keywords[24]="FILENAME_TRAINING_DATA=";
 	keywords[25]="FILENAME_TEST_DATA=";
+	keywords[26]="INITIAL_DESIGN=";
 
 
 	availableSurrogateModels.push_back("ORDINARY_KRIGING");
@@ -650,6 +652,53 @@ void RoDeODriver::readConfigFile(void){
 
 						break;
 					}
+					
+					case 26: {
+						if(ifParameterAlreadySet[key]){
+
+							std::cout<<"ERROR: INITIAL_DESIGN is already defined in the config file!\n";
+							abort();
+						}
+
+						sub_str.erase(std::remove_if(sub_str.begin(), sub_str.end(), ::isspace), sub_str.end());
+
+						if(sub_str.back() != '}'){
+
+							bool doneFlag=true;
+
+							while(doneFlag){
+
+
+								getline(&line, &len, inp);
+								std::string str(line);
+								str.erase(std::remove_if(str.begin(), str.end(), ::isspace), str.end());
+								sub_str += str;
+
+								if(str.back() == '}') doneFlag = false;
+
+							}
+
+
+						}
+
+						std::vector<std::string> valuesReadFromString;
+
+						getValuesFromString(sub_str,valuesReadFromString,',');
+
+
+						initialDesign = zeros<vec>(valuesReadFromString.size());
+
+						for (unsigned int i = 0; i<valuesReadFromString.size() ; i++){
+
+							initialDesign(i) = std::stod(valuesReadFromString[i]);
+
+						}
+						std::cout<<"INITIAL_DESIGN=";
+						trans(initialDesign).print();
+						ifInitialDesignSet = true;
+						ifParameterAlreadySet[key] = true;
+						break;
+					} /* end of case 26 */
 
 
 
@@ -1287,6 +1336,7 @@ int RoDeODriver::runDriver(void){
 	COptimizer optimizationStudy(problemName, dimension, problemType);
 	optimizationStudy.setBoxConstraints(boxConstraintsLowerBounds,boxConstraintsUpperBounds);
 	optimizationStudy.setFileNameDesignVector(designVectorFilename);
+	if(ifInitialDesignSet) optimizationStudy.setInitialDesign(initialDesign);
 
 
 	ObjectiveFunction objFunc(objectiveFunctionName, dimension);
@@ -1338,8 +1388,11 @@ int RoDeODriver::runDriver(void){
 			std::cout<<"ERROR: Check of the settings is failed!\n";
 			abort();
 		}
-		optimizationStudy.performDoE(maximumNumberDoESamples,LHS);
-
+		if(!ifInitialDesignSet){
+			optimizationStudy.performDoE(maximumNumberDoESamples,LHS);
+		} else {
+			optimizationStudy.performDoE(maximumNumberDoESamples,LHS_INITIAL);
+		}
 
 	}
 	else if(problemType == "MAXIMIZATION" || problemType == "MINIMIZATION"){
@@ -1350,7 +1403,11 @@ int RoDeODriver::runDriver(void){
 
 		if(!ifWarmStart){
 
-			optimizationStudy.performDoE(maximumNumberDoESamples,LHS);
+			if(!ifInitialDesignSet){
+				optimizationStudy.performDoE(maximumNumberDoESamples,LHS);
+			} else {
+				optimizationStudy.performDoE(maximumNumberDoESamples,LHS_INITIAL);
+			}
 
 		}
 

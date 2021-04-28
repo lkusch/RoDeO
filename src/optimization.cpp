@@ -75,6 +75,8 @@ COptimizer::COptimizer(std::string nameTestcase, int numberOfOptimizationParams,
 	upperBoundsForEIMaximization.zeros(dimension);
 	upperBoundsForEIMaximization.fill(1.0/dimension);
 
+	initDesign.zeros(dimension);
+
 	ifBoxConstraintsSet = false;
 	iterMaxEILoop = dimension*100000;
 	iterGradientEILoop = 100;
@@ -190,6 +192,13 @@ void COptimizer::setBoxConstraints(vec lb, vec ub){
 	lowerBounds = lb;
 	upperBounds = ub;
 	ifBoxConstraintsSet = true;
+
+}
+
+void COptimizer::setInitialDesign(vec init){
+
+	std::cout<<"Setting initial design vector"<<std::endl;
+  	initDesign = init;
 
 }
 
@@ -1135,6 +1144,21 @@ void COptimizer::performDoE(unsigned int howManySamples, DoE_METHOD methodID){
 		std::string filename= this->name + "_samples.csv";
 		DoE.saveSamplesToCSVFile(filename);
 		sampleCoordinates = DoE.getSamples();
+	}
+
+	if(methodID == LHS_INITIAL){
+
+		LHSSamples DoE(dimension, lowerBounds, upperBounds, howManySamples-1);
+		
+		std::string filename= this->name + "_samples.csv";
+		DoE.saveSamplesToCSVFile(filename);
+		sampleCoordinates = DoE.getSamples();
+
+		rowvec initDesignRow = conv_to<rowvec>::from(initDesign);
+
+		sampleCoordinates.resize(howManySamples, dimension);
+		sampleCoordinates.row(howManySamples-1)=initDesignRow;
+
 	}
 
 #if 0

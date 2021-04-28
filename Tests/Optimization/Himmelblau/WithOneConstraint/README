@@ -23,3 +23,5 @@ x1 + x2 > 4.0
 
 Both the Himmelblau function and the constraint are implemented in the c-file "himmelblau.cpp". The program writes the function output and the constraint value (x1 + x2) to a file "objFunVal.dat". 
 
+
+Compile this c-file (e.g. gcc -o himmelblau himmelblau.cpp -lm) before running RoDeO

@@ -69,6 +69,7 @@ private:
 	vec boxConstraintsUpperBounds;
 	vec boxConstraintsLowerBounds;
 	vec constraintValues;
+	vec initialDesign;
 
 	bool ifObjectiveFunctionNameIsSet;
 	bool ifObjectiveFunctionOutputFileIsSet;
@@ -82,6 +83,7 @@ private:
 	bool ifmaximumNumberOfDoESamplesSet;
 	bool ifexecutablePathObjectiveFunctionSet;
 	bool ifDesignVectorFileNameSet;
+	bool ifInitialDesignSet;
 
 	bool ifDoEFilesShouldBeCleaned;
 	bool ifSurrogateModelTypeSet;
