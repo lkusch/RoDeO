@@ -1,0 +1,33 @@
+This is a test folder for an optimization based on the CFD Solver in SU2. We consider the NACA test case (2D steady Euler), that can also be found in the SU2 test case folder optimization_euler.
+Here, we consider a minimization of the drag coefficient while constraining the lift coefficient, the moment coefficient and the area of the airfoil. 
+
+To run the test case please follow these steps:
+1. Compile su2_run in the present directory via
+	make
+2. Adjust settings.dat in the RoDeO home directory. An examplary file is given by settings_example.dat. 
+3. Run rodeo (e.g. with the command ./build/rodeo if you are in the RoDeO home directory) 
+
+1a (Optional) You can adjust the su2_naca.cfg file to make a warm start by adding the line "WARM_START= YES". This skips the initial design of experiments and uses the values provided in the respective file. 
+   For this please copy in the test case folder the files for the warm start to the test case directory: 
+	cp WarmStart/* .
+
+For constructing an own SU2 case please consider the following steps:
+1. Provide the mesh file
+2. Provide the file config_CFD.cfg that runs with SU2_CFD. You can just rename the original configuration file. 
+   Please make sure that the following aspects are considered:
+	- Set CONV_FILENAME as: history
+	- Set MESH_FILENAME to the same filename as MESH_OUT_FILENAME for deformation
+	- Provide a corresponding restart file if the restart option is chosen
+	- Make sure that the output format is CSV (currently only this format is supported) or adjust the corresponding TODOs (TODO FORMAT) in su2_run.cpp for your format of choice
+        - If VALUE_OBJFUNC_FILENAME is specified, make sure that is of_eval.dat
+3. Provide the file config_DEF.cfg that runs with SU2_DEF. 
+   Please make sure that you delete all lines containing DV_VALUE since they are added during optimization
+4. Set up a configuration file for the RoDeO parameters in the style of su2_naca.cfg. You can just to the style of the original RoDeO configuration files. 
+   One new option can be considered:
+	INITIAL_DESIGN: If you want the initial design values to be considered in the initial design of experiments (at the end of it), please provide them (see also su2_naca.cfg)
+5. Set up a configuration file for the interface SU2-RoDeO. You can stick to the style of su2_parameters.cfg:
+	DIMENSION= problem dimension
+	NUMBER_OF_CONSTRAINTS= number of constraint functions
+	OBJECTIVE_FUNCTION_NAME= name of objective function (supported are currently DRAG, LIFT, MOMENT_Z, for others you have to add this in su2_run.cpp indicated by TODO USER_DEFINED)
+	CONSTRAINT_FUNCTION_NAMES= constraint function names separated by commas in the order of appearance as in the RoDeO configuration file (supported are currently DRAG, LIFT, MOMENT_Z, AREA, see comment above)
+	NUMBER_OF_PARTITIONS= number of partition

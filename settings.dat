@@ -1,6 +1,6 @@
 # current working directory
-WORKING_DIRECTORY= /home/lkusch/Programs/RoDeO/Tests/Optimization/Himmelblau/WithOneConstraint
+WORKING_DIRECTORY= /home/lkusch/Programs/RoDeO/Tests/Optimization/su2_naca_test
 # directory for the python scripts
 PYTHON_DIRECTORY= /home/lkusch/Programs/RoDeO/python
 # name of the configuration file
-CONFIGURATION_FILE= himmelblau.cfg
+CONFIGURATION_FILE= su2_naca.cfg
